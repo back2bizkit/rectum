@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Invitation</title>
+  <!-- Google Font: Oswald -->
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: black;
+      color: white;
+      text-align: center;
+      font-family: 'Oswald', sans-serif;
+    }
+    /* Video at the top */
+    #video-bg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    /* Content beneath the video */
+    .content {
+      position: relative;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 600px;
+      margin-top: 20px;
+    }
+    h1 {
+      color: #D10000; /* Deep Red inspired by Gaspar Noé films */
+      font-size: 36px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      border-radius: 5px;
+      font-family: 'Oswald', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      transition: all 0.3s ease-in-out;
+    }
+    .yes {
+      background: #A00000;
+      color: #E6B0AA;
+      box-shadow: 0 0 6px rgba(255, 0, 51, 0.4);
+    }
+    .no {
+      background: #4A0080;
+      color: #C39BD3;
+      box-shadow: 0 0 6px rgba(128, 0, 255, 0.4);
+    }
+    .yes:hover {
+      background: #8A0000;
+      box-shadow: 0 0 8px rgba(255, 0, 51, 0.6);
+      transform: scale(1.05);
+    }
+    .no:hover {
+      background: #3A0066;
+      box-shadow: 0 0 8px rgba(128, 0, 255, 0.6);
+      transform: scale(1.05);
+    }
+    .response {
+      margin-top: 20px;
+      display: none;
+    }
+    .response img {
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 10px;
+    }
+    .response p {
+      color: #D10000; /* Deep Red */
+      font-size: 36px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Video at the top (autoplay, loop, unmuted) -->
+  <video id="video-bg" autoplay loop>
+    <source src="https://player.vimeo.com/progressive_redirect/download/1070778931/container/a5d49115-bb70-4e49-8ccd-1a8bebd60c7c/38d38436-cbb4d693/sequence_01_27_%281%29%20%282160p%29.mp4?expires=1743427173&loc=external&signature=303e3430a23785a95d65997c42daabba6588b93e9e3b32dabe9dd8d561ffbc10&user_id=8956225" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Content below the video -->
+  <div class="content" id="content">
+    <h1 id="main-text">Will you join us?</h1>
+    <button class="btn yes" onclick="sendResponse('yes')">Yes</button>
+    <button class="btn no" onclick="sendResponse('no')">No</button>
+
+    <!-- Response content -->
+    <div id="yes-response" class="response">
+      <img src="https://ucuncusinema.com/wp-content/uploads/2024/07/gaspar-noe-dosyasi-1-2-790x435.jpg" alt="Gaspar Noé">
+      <p>THERE IS NO TURNING BACK!</p>
+    </div>
+    <div id="no-response" class="response">
+      <img src="https://www.irishtimes.com/resizer/v2/CTL6WMKJWC72W77NCYJQGF2EJ4.jpg?auth=de821611850fd16abe548efe7aa1c7a78a5ab750c750374796257387f60df10a&smart=true&width=1600&height=900" alt="Disappointed">
+      <p>I'M DISAPPOINTED IN YOU.</p>
+    </div>
+  </div>
+
+  <script>
+    function getQueryParam(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name) || 'Anonymous';
+    }
+
+    function sendResponse(response) {
+      const name = getQueryParam('name');
+
+      // Hide the video, heading, and buttons
+      document.getElementById('video-bg').style.display = 'none';
+      document.getElementById('main-text').style.display = 'none';
+      document.querySelector('.yes').style.display = 'none';
+      document.querySelector('.no').style.display = 'none';
+
+      // Show the corresponding response
+      if(response === 'yes'){
+        document.getElementById('yes-response').style.display = 'block';
+      } else {
+        document.getElementById('no-response').style.display = 'block';
+      }
+      
+      console.log("Sending name:", name, "Response:", response);
+      fetch('https://script.google.com/macros/s/AKfycbxw6beJrRBUxSZ_sk_bgpb28WGfEqRDplRt4TXcgDL0l6Dz9nsT12OzhJkWe8JiSWnz9w/exec', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, response })
+      })
+      .then(resp => {
+        if(resp.ok){
+          alert('Response recorded!');
+        } else {
+          alert('Failed to record response. Please try again.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error occurred while sending the response.');
+      });
+    }
+  </script>
+</body>
+</html>
